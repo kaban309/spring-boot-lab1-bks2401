@@ -3,6 +3,8 @@ package com.example.demo.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,15 +28,29 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "password_hash", nullable = false, length = 100)
+    private String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private UserStatus status;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<GardenBed> gardenBeds = new ArrayList<>();
 
     protected User() {
     }
 
-    public User(String name, String email) {
+    public User(String name, String email, String passwordHash, Role role, UserStatus status) {
         this.name = name;
         this.email = email;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.status = status;
     }
 
     public Long getId() { return id; }
@@ -42,4 +58,10 @@ public class User {
     public void setName(String name) { this.name = name; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+    public UserStatus getStatus() { return status; }
+    public void setStatus(UserStatus status) { this.status = status; }
 }

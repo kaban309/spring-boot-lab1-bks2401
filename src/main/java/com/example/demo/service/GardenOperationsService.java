@@ -9,6 +9,7 @@ import com.example.demo.model.Harvest;
 import com.example.demo.model.Planting;
 import com.example.demo.model.PlantingStatus;
 import com.example.demo.model.User;
+import com.example.demo.model.UserStatus;
 import com.example.demo.repository.CropRepository;
 import com.example.demo.repository.GardenBedRepository;
 import com.example.demo.repository.HarvestRepository;
@@ -95,7 +96,7 @@ public class GardenOperationsService {
 
     /**
      * Операция 3. Передать грядку другому пользователю (Грядка + Пользователь, проверка Посадок).
-     * Недопустимо, если новый владелец совпадает с текущим или на грядке есть растущие посадки.
+     * Недопустимо, если новый владелец совпадает с текущим, заблокирован или на грядке есть растущие посадки.
      */
     @Transactional
     public GardenBed transfer(Long bedId, Long newOwnerId) {
@@ -103,6 +104,9 @@ public class GardenOperationsService {
         GardenBed bed = lockBed(bedId);
         User newOwner = users.findById(newOwnerId)
                 .orElseThrow(() -> new BadRequestException("Пользователь " + newOwnerId + " не существует"));
+        if (newOwner.getStatus() != UserStatus.ACTIVE) {
+            throw new ConflictException("Нельзя передать грядку заблокированному пользователю");
+        }
         if (bed.getOwner().getId().equals(newOwnerId)) {
             throw new ConflictException("Грядка уже принадлежит этому пользователю");
         }

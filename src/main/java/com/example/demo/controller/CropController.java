@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.CropDto;
+import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.CropService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,28 +29,33 @@ public class CropController {
     }
 
     @GetMapping
-    public List<CropDto.Response> getAll() {
+    @PreAuthorize("isAuthenticated()")
+    public List<CropDto.Response> getAll(@AuthenticationPrincipal AppUserDetails me) {
         return service.findAll().stream().map(CropDto.Response::from).toList();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public CropDto.Response getById(@PathVariable Long id) {
         return CropDto.Response.from(service.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('AGRONOMIST', 'ADMIN')")
     public CropDto.Response create(@RequestBody CropDto.Request request) {
         return CropDto.Response.from(service.create(request));
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('AGRONOMIST', 'ADMIN')")
     public CropDto.Response update(@PathVariable Long id, @RequestBody CropDto.Request request) {
         return CropDto.Response.from(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('AGRONOMIST', 'ADMIN')")
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }

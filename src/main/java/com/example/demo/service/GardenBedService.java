@@ -34,6 +34,12 @@ public class GardenBedService {
         return beds.findAll();
     }
 
+    /** Только объекты, принадлежащие пользователю (для не-администраторов). */
+    @Transactional(readOnly = true)
+    public List<GardenBed> findAllOwnedBy(Long ownerId) {
+        return beds.findAllByOwner(ownerId);
+    }
+
     @Transactional(readOnly = true)
     public GardenBed findById(Long id) {
         return beds.findById(id).orElseThrow(() -> new NotFoundException("Грядка " + id + " не найдена"));

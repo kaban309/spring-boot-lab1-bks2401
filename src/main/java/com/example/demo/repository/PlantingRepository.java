@@ -20,6 +20,12 @@ public interface PlantingRepository extends JpaRepository<Planting, Long> {
 
     List<Planting> findByCropId(Long cropId);
 
+    @Query("select p from Planting p where p.gardenBed.owner.id = :ownerId")
+    List<Planting> findAllByOwner(@Param("ownerId") Long ownerId);
+
+    @Query("select count(p) > 0 from Planting p where p.id = :id and p.gardenBed.owner.id = :ownerId")
+    boolean isOwnedBy(@Param("id") Long id, @Param("ownerId") Long ownerId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Planting p where p.id = :id")
     Optional<Planting> findByIdForUpdate(@Param("id") Long id);

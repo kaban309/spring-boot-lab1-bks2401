@@ -29,6 +29,12 @@ public class HarvestService {
         return harvests.findAll();
     }
 
+    /** Только объекты, принадлежащие пользователю (для не-администраторов). */
+    @Transactional(readOnly = true)
+    public List<Harvest> findAllOwnedBy(Long ownerId) {
+        return harvests.findAllByOwner(ownerId);
+    }
+
     @Transactional(readOnly = true)
     public Harvest findById(Long id) {
         return harvests.findById(id).orElseThrow(() -> new NotFoundException("Сбор урожая " + id + " не найден"));

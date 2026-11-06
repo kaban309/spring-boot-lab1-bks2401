@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.PlantingDto;
+import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.PlantingService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,28 +29,33 @@ public class PlantingController {
     }
 
     @GetMapping
-    public List<PlantingDto.Response> getAll() {
-        return service.findAll().stream().map(PlantingDto.Response::from).toList();
+    @PreAuthorize("isAuthenticated()")
+    public List<PlantingDto.Response> getAll(@AuthenticationPrincipal AppUserDetails me) {
+        return (me.isAdmin() ? service.findAll() : service.findAllOwnedBy(me.getId())).stream().map(PlantingDto.Response::from).toList();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @access.ownsPlanting(#id)")
     public PlantingDto.Response getById(@PathVariable Long id) {
         return PlantingDto.Response.from(service.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN') or @access.ownsBed(#request.gardenBedId())")
     public PlantingDto.Response create(@RequestBody PlantingDto.Request request) {
         return PlantingDto.Response.from(service.create(request));
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (@access.ownsPlanting(#id) and (#request.gardenBedId() == null or @access.ownsBed(#request.gardenBedId())))")
     public PlantingDto.Response update(@PathVariable Long id, @RequestBody PlantingDto.Request request) {
         return PlantingDto.Response.from(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN') or @access.ownsPlanting(#id)")
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }

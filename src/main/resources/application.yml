@@ -2,6 +2,7 @@ spring:
   application:
     name: 1БКС24081
   config:
+    # Секреты берутся из файла .env в корне проекта (он не попадает в git) или из переменных окружения.
     import: optional:file:.env[.properties]
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/garden}
@@ -9,5 +10,13 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
+      # Структуру БД создаёт администратор скриптами из папки db/, приложение лишь проверяет соответствие.
       ddl-auto: validate
     open-in-view: false
+
+server:
+  error:
+    # В ответах об ошибках не показываем текст исключений и стек-трейсы
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never

@@ -2,9 +2,15 @@
 DROP TABLE IF EXISTS harvests, plantings, crops, garden_beds, users CASCADE;
 
 CREATE TABLE users (
-    id    BIGSERIAL    PRIMARY KEY,
-    name  VARCHAR(100) NOT NULL CHECK (length(btrim(name)) > 0),
-    email VARCHAR(255) NOT NULL UNIQUE                      -- один email = один пользователь
+    id             BIGSERIAL    PRIMARY KEY,
+    name           VARCHAR(100) NOT NULL CHECK (length(btrim(name)) > 0),
+    email          VARCHAR(255) NOT NULL UNIQUE                        -- один email = одна учётная запись
+                                CHECK (email = lower(email)),          -- email храним в нижнем регистре
+    password_hash  VARCHAR(100) NOT NULL,                              -- хэш BCrypt, пароль в открытом виде не хранится
+    role           VARCHAR(20)  NOT NULL DEFAULT 'GARDENER'
+                                CHECK (role IN ('GARDENER', 'AGRONOMIST', 'ADMIN')),
+    status         VARCHAR(10)  NOT NULL DEFAULT 'ACTIVE'
+                                CHECK (status IN ('ACTIVE', 'BLOCKED'))  -- заблокированный не может войти
 );
 
 CREATE TABLE garden_beds (
@@ -30,7 +36,7 @@ CREATE TABLE plantings (
     status         VARCHAR(10) NOT NULL DEFAULT 'PLANNED'
                                CHECK (status IN ('PLANNED', 'GROWING', 'HARVESTED')),
     planted_at     DATE        NOT NULL DEFAULT CURRENT_DATE,
-    version        BIGINT      NOT NULL DEFAULT 0            -- оптимистическая блокировка (JPA @Version)
+    version        BIGINT      NOT NULL DEFAULT 0
 );
 CREATE INDEX idx_plantings_bed  ON plantings (garden_bed_id);
 CREATE INDEX idx_plantings_crop ON plantings (crop_id);

@@ -38,6 +38,12 @@ public class PlantingService {
         return plantings.findAll();
     }
 
+    /** Только объекты, принадлежащие пользователю (для не-администраторов). */
+    @Transactional(readOnly = true)
+    public List<Planting> findAllOwnedBy(Long ownerId) {
+        return plantings.findAllByOwner(ownerId);
+    }
+
     @Transactional(readOnly = true)
     public Planting findById(Long id) {
         return plantings.findById(id).orElseThrow(() -> new NotFoundException("Посадка " + id + " не найдена"));

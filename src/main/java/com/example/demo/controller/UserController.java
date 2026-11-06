@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
+import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,28 +29,33 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto.Response> getAll() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserDto.Response> getAll(@AuthenticationPrincipal AppUserDetails me) {
         return service.findAll().stream().map(UserDto.Response::from).toList();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @access.isSelf(#id)")
     public UserDto.Response getById(@PathVariable Long id) {
         return UserDto.Response.from(service.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDto.Response create(@RequestBody UserDto.Request request) {
         return UserDto.Response.from(service.create(request));
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (@access.isSelf(#id) and #request.role() == null and #request.status() == null)")
     public UserDto.Response update(@PathVariable Long id, @RequestBody UserDto.Request request) {
         return UserDto.Response.from(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
