@@ -11,9 +11,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * 401 Unauthorized: не предъявлены учётные данные, они неверны или учётная запись недоступна (заблокирована).
- * Сообщение намеренно одинаковое для всех случаев — по ответу нельзя узнать, существует ли такой email
- * и заблокирован ли он.
+ * 401 Unauthorized: access-токен не предъявлен, недействителен (подпись, срок, тип) или учётная запись недоступна
+ * (заблокирована, удалена). Сообщение намеренно одинаковое для всех случаев — по ответу нельзя понять причину.
  */
 @Component
 public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -28,14 +27,14 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        // в журнал — только факт и адрес; переданные учётные данные не записываются
+        // в журнал — только факт и адрес; токены и пароли не записываются
         log.warn("Отказ 401: {} {} ({})", clean(request.getMethod()), clean(request.getRequestURI()),
                 authException.getClass().getSimpleName());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setHeader("WWW-Authenticate", "Basic realm=\"garden\", charset=\"UTF-8\"");
+        response.setHeader("WWW-Authenticate", "Bearer realm=\"garden\"");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"error\":\"Требуется аутентификация: неверный email или пароль, "
-                + "либо учётная запись недоступна\"}");
+        response.getWriter().write("{\"error\":\"Требуется аутентификация: передайте действующий access-токен "
+                + "в заголовке Authorization: Bearer\"}");
     }
 }

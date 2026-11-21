@@ -1,6 +1,7 @@
 package com.example.demo.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,6 +23,14 @@ public class ApiExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Map<String, String>> badRequest(BadRequestException e) {
         return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+    }
+
+    /** Неверные учётные данные или недействительный refresh. Текст не раскрывает причину отказа. */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, String>> unauthorized(UnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"garden\"")
+                .body(Map.of("error", e.getMessage()));
     }
 
     @ExceptionHandler(ConflictException.class)

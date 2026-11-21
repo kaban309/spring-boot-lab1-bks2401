@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "9f0eee94-5464-4bf9-ba75-5a0d3fff65cd",
+		"name": "Лаб 5 Вар 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "59013098",
+		"_collection_link": "https://timofejbabashkin18328-286657.postman.co/workspace/%D0%A2%D0%B8%D0%BC%D0%BE%D1%84%D0%B5%D0%B9-%D0%91%D0%B0%D0%B1%D0%B0%D1%88%D0%BA%D0%B8%D0%BD's-Workspace~5e3723b2-949f-43a8-87a1-8b75f316cdcf/collection/59013098-9f0eee94-5464-4bf9-ba75-5a0d3fff65cd?action=share&source=collection_link&creator=59013098"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"email\": \"timofey@example.com\", \"password\": \"Timofey#2026\", \"deviceId\": \"postman-demo\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Me",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnYXJkZW4tYXBwIiwic3ViIjoidGltb2ZleUBleGFtcGxlLmNvbSIsImp0aSI6IjRhYmYyODdmLWZkNDItNGY0Zi1hOWQwLTExYTBhMDBkNTgyZSIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3OTUyNzMxMTEsImV4cCI6MTc5NTI3NDAxMSwiYXV0aCI6WyJST0xFX0dBUkRFTkVSIl19.um-bUruQ5ght_ZWzXjpW3SW0FMaofn8Hg24Y6FK_H_",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/auth/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnYXJkZW4tYXBwIiwic3ViIjoidGltb2ZleUBleGFtcGxlLmNvbSIsImp0aSI6IjIxNzRlMzQzLTMwYjItNGYzZi1iN2FmLThiYzFhNTg5NTNmMyIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzk1MjczMTExLCJleHAiOjE3OTU4Nzc5MTF9.i44aTEX8HmxxLDUDJbjdYeTZqR_fUBVHEEIy-LnZ64A\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnYXJkZW4tYXBwIiwic3ViIjoidGltb2ZleUBleGFtcGxlLmNvbSIsImp0aSI6IjIxNzRlMzQzLTMwYjItNGYzZi1iN2FmLThiYzFhNTg5NTNmMyIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzk1MjczMTExLCJleHAiOjE3OTU4Nzc5MTF9.i44aTEX8HmxxLDUDJbjdYeTZqR_fUBVHEEIy-LnZ64A\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

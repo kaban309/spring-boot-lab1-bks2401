@@ -14,6 +14,13 @@ spring:
       ddl-auto: validate
     open-in-view: false
 
+# Настройки JWT (задание 5). Сроки жизни в миллисекундах.
+jwt:
+  # Секретный ключ подписи HS256: 32+ случайных байт в Base64. Берётся из .env (в git не попадает), в коде его нет.
+  secret: ${JWT_SECRET}
+  accessExpiration: 900000        # access: 15 минут
+  refreshExpiration: 604800000    # refresh: 7 дней
+
 server:
   error:
     # В ответах об ошибках не показываем текст исключений и стек-трейсы
